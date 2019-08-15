@@ -1,5 +1,10 @@
 package com.itsherman.domain;
 
+import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,8 +18,7 @@ public class EmailSendInfo {
     private String subject;
     private String Content;
     private Boolean useSSL;
-    private Boolean auth;
-    private List<ToUser> toUsers;
+    private List<String> toUsers;
 
     public String getFrom() {
         return from;
@@ -52,33 +56,24 @@ public class EmailSendInfo {
         return this;
     }
 
-    public Boolean getAuth() {
-        return auth;
+    public List<Address> getAllRicipients() {
+        List<Address> collect = null ;
+        try {
+             collect = new ArrayList<>();
+            for (String address : this.toUsers) {
+                InternetAddress internetAddress = new InternetAddress(address);
+                collect.add(internetAddress);
+            }
+
+        }catch (AddressException e){
+            e.printStackTrace();
+        }
+        return collect;
     }
 
-    public EmailSendInfo setAuth(Boolean auth) {
-        this.auth = auth;
+    public EmailSendInfo setToUsers(String... destAddress) {
+        this.toUsers = Arrays.asList(destAddress);
         return this;
     }
 
-    public List<ToUser> getToUsers() {
-        return toUsers;
-    }
-
-    public EmailSendInfo setToUsers(List<ToUser> toUsers) {
-        this.toUsers = toUsers;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "EmailSendInfo{" +
-                "from='" + from + '\'' +
-                ", subject='" + subject + '\'' +
-                ", Content='" + Content + '\'' +
-                ", useSSL=" + useSSL +
-                ", auth=" + auth +
-                ", toUsers=" + toUsers +
-                '}';
-    }
 }

@@ -1,7 +1,5 @@
 package com.itsherman.domain;
 
-import com.itsherman.config.ServerConfig;
-import com.itsherman.constant.PopKeyConstants;
 import com.itsherman.session.SessionFactory;
 
 import javax.mail.*;
@@ -9,10 +7,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  * <p>邮件发送主体</p>
@@ -24,26 +19,31 @@ public class EmailSender implements Serializable {
 
    private EmailSendInfo emailSendInfo;
 
+   private ControlMailBox controlMailBox;
+
 
     public EmailSender() {
     }
 
     public EmailSender(EmailSendInfo emailSendInfo) {
         this.emailSendInfo = emailSendInfo;
+        this.controlMailBox = ControlMailBox.getInstance();
     }
 
     public void send() {
-        Session session = SessionFactory.openSession(emailSendInfo.getUseSSL(),emailSendInfo.getAuth());
+        Session session = SessionFactory.openSession(emailSendInfo.getUseSSL(),true);
         try {
-            Transport transport = session.getTransport();
+
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(emailSendInfo.getFrom()));
             message.setText(emailSendInfo.getContent(),"UTF-8");
             message.setSubject(emailSendInfo.getSubject());
             message.setSentDate(Date.from(Instant.now()));
-            message.setRecipient(Message.RecipientType.TO,new InternetAddress(emailSendInfo.getToUsers().get(0).getEmailAddress()));
-            transport.connect("yumiaoxia132@163.com","yuzi940710");
-            transport.sendMessage(message,message.getRecipients(Message.RecipientType.TO));
+            message.setRecipients(Message.RecipientType.TO,emailSendInfo.getAllRicipients().toArray(new Address[emailSendInfo.getAllRicipients().size()]));
+            message.saveChanges();
+            Transport transport = session.getTransport();
+            transport.connect(controlMailBox.getUsername(),controlMailBox.getPassword());
+            transport.sendMessage(message,message.getAllRecipients());
             transport.close();
         }catch (MessagingException e){
             e.printStackTrace();

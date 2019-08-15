@@ -1,5 +1,7 @@
 package com.itsherman.service.impl;
 
+import com.itsherman.config.ConfigManager;
+import com.itsherman.config.ServerConfig;
 import com.itsherman.domain.EmailSender;
 import com.itsherman.service.EmailService;
 
@@ -11,8 +13,16 @@ import com.itsherman.service.EmailService;
  */
 public class EmailServiceImpl implements EmailService {
 
+    private ConfigManager configManager;
+
+    public EmailServiceImpl(){
+        configManager = ConfigManager.getInstance();
+    }
+
+
     @Override
     public void send(EmailSender emailSender) {
+       configManager.setProtocal(ServerConfig.Protocal.SMTP);
         emailSender.send();
     }
 

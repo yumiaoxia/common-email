@@ -1,17 +1,16 @@
 package com.itsherman.example;
 
+import com.itsherman.config.ConfigManager;
 import com.itsherman.config.ServerConfig;
+import com.itsherman.domain.ControlMailBox;
 import com.itsherman.domain.EmailSendInfo;
 import com.itsherman.domain.EmailSender;
-import com.itsherman.domain.ToUser;
 import com.itsherman.service.EmailService;
 import com.itsherman.service.impl.EmailServiceImpl;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 /**
@@ -22,23 +21,24 @@ import java.util.Properties;
  */
 public class EmailSenderExample {
 
-    public void sendEmial() throws IOException {
+    public void sendEmail() throws IOException {
         Properties prop = new Properties();
-        prop.load(new FileReader(System.getProperty("user.dir")+"/src/main/resources/mailserver.properties"));
-        int size = prop.size();
-        ServerConfig serverConfig =ServerConfig.getInstance();
-        serverConfig.setHost(prop.getProperty("email.163.smtp.host"));
-        serverConfig.setPort(prop.getProperty("email.163.smtp.port"));
-        serverConfig.setSslPort(prop.getProperty("email.163.smtp.ssl.port"));
-        List<ToUser> toUsers = new ArrayList<>();
-        toUsers.add(new ToUser("yumiaoxia22@163.com"));
+        prop.load(new FileReader(MessageFormat.format("{0}/auth.properties", ServerConfig.class.getClassLoader().getResource("").getPath())));
+        ControlMailBox controlMailBox = ControlMailBox.getInstance();
+        controlMailBox.setUsername(prop.getProperty("username"));
+        controlMailBox.setPassword(prop.getProperty("password"));
+
+
+        ConfigManager manager = ConfigManager.getInstance();
+        manager.setControlMailBox(controlMailBox);
+        ServerConfig serverConfig = manager.getServerConfig();
+
         EmailSendInfo emailSendInfo = new EmailSendInfo()
-                .setAuth(false)
                 .setFrom("yumiaoxia132@163.com")
-                .setSubject("上课通知")
-                .setContent("理单待客审开关。可取值：1/0 ；格式：review_{渠道类型}_{门店号}_{订单类型}；不设置时 1 为默认值。")
+                .setSubject("java新书订购")
+                .setContent("新书节盛大开幕，促销特惠，欢迎订购")
                 .setUseSSL(false)
-                .setToUsers(toUsers);
+                .setToUsers("1253950375@qq.com","yumiaoxia22@163.com");
         EmailSender emailSender = new EmailSender();
         emailSender.setEmailSendInfo(emailSendInfo);
         EmailService emailService = new EmailServiceImpl();

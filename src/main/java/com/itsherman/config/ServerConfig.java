@@ -1,6 +1,9 @@
 package com.itsherman.config;
 
-import com.sun.security.ntlm.Server;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Properties;
 
 /**
  * <p>邮件服务提供商服务器配置</p>
@@ -11,49 +14,84 @@ import com.sun.security.ntlm.Server;
 public class ServerConfig {
 
     private static ServerConfig serverConfig = new ServerConfig();
-    private ServerConfig(){
+    private static Properties prop = new Properties();
+    private static String HOST = "email.%s.%s.host";
+    private static String PORT = "email.%s.%s.port";
+    private static String SSL_PORT = "email.%s.%s.ssl.port";
 
+    static {
+        try {
+            prop.load(new FileReader(MessageFormat.format("{0}/mailserver.properties", ServerConfig.class.getClassLoader().getResource("").getPath())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    private ServerConfig(){};
+
     public static ServerConfig getInstance(){
         return serverConfig;
     }
 
-    private String host;
+    private Provider provider;
 
-    private String port;
+    private Protocal protocal;
 
-    private String sslPort;
+    private String host = HOST;
+
+    private String port = PORT;
+
+    private String sslPort = SSL_PORT;
 
     public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
+        return String.format(host,provider.getValue(),protocal.getValue());
     }
 
     public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
+        return String.format(port,provider.getValue(),protocal.getValue());
     }
 
     public String getSslPort() {
-        return sslPort;
+        return String.format(sslPort,provider.getValue(),protocal.getValue());
     }
 
-    public void setSslPort(String sslPort) {
-        this.sslPort = sslPort;
+    public Provider getProvider() {
+        return provider;
     }
 
-    @Override
-    public String toString() {
-        return "ServerConfig{" +
-                "host='" + host + '\'' +
-                ", port='" + port + '\'' +
-                ", sslPort='" + sslPort + '\'' +
-                '}';
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
+    public void setProtocal(Protocal protocal) {
+        this.protocal = protocal;
+    }
+
+    static  enum Provider{
+        QQ("qq"),
+        WANGYI_163("163");
+
+        private final String value;
+
+        Provider(String value) {
+            this.value  = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+   public static enum Protocal{
+        SMTP("smtp"),POP3("pop"),IMAP("imap");
+        private final String value;
+
+        Protocal(String value) {
+            this.value  = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

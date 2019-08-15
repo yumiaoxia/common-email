@@ -14,7 +14,7 @@ public class App
     {
         EmailSenderExample example = new EmailSenderExample();
         try {
-            example.sendEmial();
+            example.sendEmail();
         } catch (IOException e) {
             e.printStackTrace();
         }
