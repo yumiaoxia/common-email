@@ -22,7 +22,7 @@ public class ControlMailBox {
         if(controlMailBox == null ){
             synchronized (ControlMailBox.class){
                 if(controlMailBox == null ){
-                    return new ControlMailBox();
+                    controlMailBox  = new ControlMailBox();
                 }
             }
         }

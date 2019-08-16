@@ -2,7 +2,10 @@ package com.itsherman.session;
 
 import com.itsherman.config.ServerConfig;
 import com.itsherman.constant.PopKeyConstants;
+import com.sun.mail.util.MailSSLSocketFactory;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.util.Properties;
 

@@ -27,7 +27,7 @@ public class ServerConfig {
         }
     }
 
-    private ServerConfig(){};
+    private ServerConfig(){}
 
     public static ServerConfig getInstance(){
         return serverConfig;
@@ -44,15 +44,18 @@ public class ServerConfig {
     private String sslPort = SSL_PORT;
 
     public String getHost() {
-        return String.format(host,provider.getValue(),protocal.getValue());
+       String hostKey =  String.format(HOST,provider.getValue(),protocal.getValue());
+       return prop.getProperty(hostKey);
     }
 
     public String getPort() {
-        return String.format(port,provider.getValue(),protocal.getValue());
+        String portKey =  String.format(PORT,provider.getValue(),protocal.getValue());
+        return  prop.getProperty(portKey);
     }
 
     public String getSslPort() {
-        return String.format(sslPort,provider.getValue(),protocal.getValue());
+        String sslPortKey =  String.format(SSL_PORT,provider.getValue(),protocal.getValue());
+        return prop.getProperty(sslPortKey);
     }
 
     public Provider getProvider() {

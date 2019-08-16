@@ -6,6 +6,7 @@ import javax.mail.internet.InternetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p> </p>
@@ -18,7 +19,7 @@ public class EmailSendInfo {
     private String subject;
     private String Content;
     private Boolean useSSL;
-    private List<String> toUsers;
+    private String[] toUsers;
 
     public String getFrom() {
         return from;
@@ -56,15 +57,12 @@ public class EmailSendInfo {
         return this;
     }
 
-    public List<Address> getAllRicipients() {
-        List<Address> collect = null ;
+    public Address[] getAllRicipients() {
+        Address[] collect = new Address[toUsers.length] ;
         try {
-             collect = new ArrayList<>();
-            for (String address : this.toUsers) {
-                InternetAddress internetAddress = new InternetAddress(address);
-                collect.add(internetAddress);
+            for (int i = 0; i < toUsers.length; i++) {
+                collect[i] = new InternetAddress(toUsers[i]);
             }
-
         }catch (AddressException e){
             e.printStackTrace();
         }
@@ -72,7 +70,7 @@ public class EmailSendInfo {
     }
 
     public EmailSendInfo setToUsers(String... destAddress) {
-        this.toUsers = Arrays.asList(destAddress);
+        this.toUsers = destAddress;
         return this;
     }
 

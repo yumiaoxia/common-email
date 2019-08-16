@@ -5,6 +5,7 @@ import com.itsherman.config.ServerConfig;
 import com.itsherman.domain.ControlMailBox;
 import com.itsherman.domain.EmailSendInfo;
 import com.itsherman.domain.EmailSender;
+import com.itsherman.domain.ResultMsg;
 import com.itsherman.service.EmailService;
 import com.itsherman.service.impl.EmailServiceImpl;
 
@@ -21,27 +22,37 @@ import java.util.Properties;
  */
 public class EmailSenderExample {
 
-    public void sendEmail() throws IOException {
-        Properties prop = new Properties();
-        prop.load(new FileReader(MessageFormat.format("{0}/auth.properties", ServerConfig.class.getClassLoader().getResource("").getPath())));
-        ControlMailBox controlMailBox = ControlMailBox.getInstance();
-        controlMailBox.setUsername(prop.getProperty("username"));
-        controlMailBox.setPassword(prop.getProperty("password"));
+    private EmailService emailService;
 
+    public EmailSenderExample(){
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileReader(MessageFormat.format("{0}/auth.properties", ServerConfig.class.getClassLoader().getResource("").getPath())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ControlMailBox controlMailBox = ControlMailBox.getInstance();
+        controlMailBox.setUsername(prop.getProperty("account"));
+        controlMailBox.setPassword(prop.getProperty("password"));
 
         ConfigManager manager = ConfigManager.getInstance();
         manager.setControlMailBox(controlMailBox);
-        ServerConfig serverConfig = manager.getServerConfig();
 
+        emailService = new EmailServiceImpl();
+    }
+
+    public void sendEmail() {
         EmailSendInfo emailSendInfo = new EmailSendInfo()
                 .setFrom("yumiaoxia132@163.com")
-                .setSubject("java新书订购")
-                .setContent("新书节盛大开幕，促销特惠，欢迎订购")
+                .setSubject("课程信息")
+                .setContent("各位同学们，从本月8月19日开始报名学费从6199元上调为6899\n" +
+                        "实际报名学费最低不能低于5000！！！\n" +
+                        "现在报名学费6199元还可以优惠1500\n" +
+                        "实际只需要4699！！！\n" +
+                        "还能享受终生免费学习啦！！！\n")
                 .setUseSSL(false)
                 .setToUsers("1253950375@qq.com","yumiaoxia22@163.com");
-        EmailSender emailSender = new EmailSender();
-        emailSender.setEmailSendInfo(emailSendInfo);
-        EmailService emailService = new EmailServiceImpl();
-        emailService.send(emailSender);
+        ResultMsg resultMsg = emailService.send(emailSendInfo);
+        System.out.println(resultMsg);
     }
 }

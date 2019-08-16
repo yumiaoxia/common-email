@@ -1,6 +1,8 @@
 package com.itsherman.service;
 
+import com.itsherman.domain.EmailSendInfo;
 import com.itsherman.domain.EmailSender;
+import com.itsherman.domain.ResultMsg;
 
 
 /**
@@ -12,7 +14,7 @@ public interface EmailService {
 
     /**
      * 邮件发送
-     * @param emailSender 邮件发送主体
+     * @param emailSendInfo 邮件发送主体
      */
-    void send(EmailSender emailSender);
+    ResultMsg send(EmailSendInfo emailSendInfo);
 }
