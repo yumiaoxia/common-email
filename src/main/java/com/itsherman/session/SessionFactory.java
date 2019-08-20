@@ -2,10 +2,6 @@ package com.itsherman.session;
 
 import com.itsherman.config.ServerConfig;
 import com.itsherman.constant.PopKeyConstants;
-import com.sun.mail.util.MailSSLSocketFactory;
-
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.util.Properties;
 
@@ -23,14 +19,16 @@ public class SessionFactory {
         ServerConfig serverConfig = ServerConfig.getInstance();
         Properties prop = new Properties();
         prop.setProperty(PopKeyConstants.TRANSPORT_PROTOCAL,SMTP_PROTOCAL);
+        prop.put(PopKeyConstants.NO_SSL_SMTP_HOST,serverConfig.getHost());
         if(!useSSL){
-            prop.put(PopKeyConstants.NO_SSL_SMTP_HOST,serverConfig.getHost());
             prop.put(PopKeyConstants.NO_SSL_SMTP_AUTH,String.valueOf(auth));
         }else{
-            prop.put(PopKeyConstants.SMTP_PORT,serverConfig.getPort());
+            prop.put("mail.smtp.port", serverConfig.getSslPort());
+            prop.put("mail.smtp.ssl.enable", "true");
+            prop.put("mail,smtp.auth",true);
             prop.put(PopKeyConstants.SSL_SMTP_CLASS,SOCKETFACTORY_CLASS);
             prop.put(PopKeyConstants.SSL_SMTP_FALLBACK,"false");
-            prop.put(PopKeyConstants.SSL_SMTP_PORT,serverConfig.getPort());
+            prop.put(PopKeyConstants.SSL_SMTP_PORT,serverConfig.getSslPort());
         }
         return Session.getDefaultInstance(prop);
     }

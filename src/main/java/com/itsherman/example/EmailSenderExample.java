@@ -50,7 +50,7 @@ public class EmailSenderExample {
                         "现在报名学费6199元还可以优惠1500\n" +
                         "实际只需要4699！！！\n" +
                         "还能享受终生免费学习啦！！！\n")
-                .setUseSSL(false)
+                .setUseSSL(true)
                 .setToUsers("1253950375@qq.com","yumiaoxia22@163.com");
         ResultMsg resultMsg = emailService.send(emailSendInfo);
         System.out.println(resultMsg);

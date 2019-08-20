@@ -13,10 +13,6 @@ public class App
     public static void main( String[] args )
     {
         EmailSenderExample example = new EmailSenderExample();
-        try {
-            example.sendEmail();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        example.sendEmail();
     }
 }
