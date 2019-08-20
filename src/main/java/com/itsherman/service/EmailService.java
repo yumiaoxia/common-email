@@ -1,8 +1,8 @@
 package com.itsherman.service;
 
-import com.itsherman.domain.EmailSendInfo;
-import com.itsherman.domain.EmailSender;
+import com.itsherman.domain.send.simple.DefaultEmailMessage;
 import com.itsherman.domain.ResultMsg;
+import com.itsherman.domain.send.template.HtmlEmailMesage;
 
 
 /**
@@ -14,7 +14,9 @@ public interface EmailService {
 
     /**
      * 邮件发送
-     * @param emailSendInfo 邮件发送主体
+     * @param defaultEmailMessage 邮件发送主体
      */
-    ResultMsg send(EmailSendInfo emailSendInfo);
+    ResultMsg sendSimpleEmail(DefaultEmailMessage defaultEmailMessage);
+
+    ResultMsg sendTemplateEmail(HtmlEmailMesage htmlEmailMesage);
 }

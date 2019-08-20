@@ -2,9 +2,12 @@ package com.itsherman.service.impl;
 
 import com.itsherman.config.ConfigManager;
 import com.itsherman.config.ServerConfig;
-import com.itsherman.domain.EmailSendInfo;
-import com.itsherman.domain.EmailSender;
+import com.itsherman.constant.enums.SendType;
+import com.itsherman.domain.send.AbstractEmailMessage;
+import com.itsherman.domain.send.simple.DefaultEmailMessage;
+import com.itsherman.domain.send.EmailSender;
 import com.itsherman.domain.ResultMsg;
+import com.itsherman.domain.send.template.HtmlEmailMesage;
 import com.itsherman.service.EmailService;
 
 /**
@@ -25,10 +28,17 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public ResultMsg send(EmailSendInfo emailSendInfo) {
+    public ResultMsg sendSimpleEmail(DefaultEmailMessage defaultEmailMessage) {
        configManager.setProtocal(ServerConfig.Protocal.SMTP);
-       emailSender.setEmailSendInfo(emailSendInfo);
-       return emailSender.send();
+       emailSender.setEmailMessage(defaultEmailMessage);
+       return emailSender.send(SendType.SIMPLE);
+    }
+
+    @Override
+    public ResultMsg sendTemplateEmail(HtmlEmailMesage htmlEmailMesage) {
+        configManager.setProtocal(ServerConfig.Protocal.SMTP);
+        emailSender.setEmailMessage(htmlEmailMesage);
+        return emailSender.send(SendType.TEMPLATE);
     }
 
 

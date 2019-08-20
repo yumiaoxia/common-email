@@ -1,5 +1,9 @@
-package com.itsherman.domain;
+package com.itsherman.domain.send;
 
+import com.itsherman.constant.enums.SendType;
+import com.itsherman.domain.ControlMailBox;
+import com.itsherman.domain.ResultMsg;
+import com.itsherman.domain.send.simple.DefaultEmailMessage;
 import com.itsherman.session.SessionFactory;
 
 import javax.mail.*;
@@ -18,7 +22,7 @@ import java.util.Date;
 public class EmailSender implements Serializable {
     private static EmailSender emailSender;
 
-   private EmailSendInfo emailSendInfo;
+   private AbstractEmailMessage emailMessage;
 
    private static ControlMailBox controlMailBox = ControlMailBox.getInstance();
 
@@ -37,18 +41,11 @@ public class EmailSender implements Serializable {
        return emailSender;
    }
 
-    public ResultMsg send() {
+    public ResultMsg send(SendType sendType) {
         ResultMsg resultMsg = new ResultMsg("Email Sending",false,"exception","Unknown Exception");
-        Session session = SessionFactory.openSession(emailSendInfo.getUseSSL(),true);
+        Session session = SessionFactory.openSession(emailMessage.getUseSSL(),true);
         try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailSendInfo.getFrom()));
-            message.setText(emailSendInfo.getContent(), "UTF-8");
-            message.setSubject(emailSendInfo.getSubject());
-            message.setSentDate(new Date());
-            message.setRecipients(Message.RecipientType.TO, emailSendInfo.getAllRicipients());
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(controlMailBox.getUsername()));
-            message.saveChanges();
+           MimeMessage message = getMessage(sendType,session);
             Transport transport = session.getTransport();
             transport.connect(controlMailBox.getUsername(), controlMailBox.getPassword());
             transport.sendMessage(message, message.getAllRecipients());
@@ -66,13 +63,26 @@ public class EmailSender implements Serializable {
         return resultMsg;
     }
 
-    public EmailSendInfo getEmailSendInfo() {
-        return emailSendInfo;
+    private MimeMessage getMessage(SendType sendType,Session session) throws MessagingException {
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(emailMessage.getFrom()));
+        message.setSubject(emailMessage.getSubject());
+        message.setRecipients(Message.RecipientType.TO, emailMessage.getAllRicipients());
+        message.addRecipient(Message.RecipientType.CC, new InternetAddress(controlMailBox.getUsername()));
+        message.setSentDate(new Date());
+        if(SendType.SIMPLE == sendType){
+            DefaultEmailMessage defaultEmailMessage = (DefaultEmailMessage) emailMessage;
+            message.setText(defaultEmailMessage.getContent(), "UTF-8");
+        }
+        message.saveChanges();
+        return message;
     }
 
-    public void setEmailSendInfo(EmailSendInfo emailSendInfo) {
-        this.emailSendInfo = emailSendInfo;
+    public AbstractEmailMessage getEmailMessage() {
+        return emailMessage;
     }
 
-
+    public void setEmailMessage(AbstractEmailMessage emailMessage) {
+        this.emailMessage = emailMessage;
+    }
 }
