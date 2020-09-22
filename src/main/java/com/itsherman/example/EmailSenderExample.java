@@ -7,7 +7,6 @@ import com.itsherman.domain.send.simple.DefaultEmailMessage;
 import com.itsherman.domain.ResultMsg;
 import com.itsherman.domain.send.template.HtmlEmailMesage;
 import com.itsherman.example.template.DemoAssembler;
-import com.itsherman.example.template.DemoHtmlMessage;
 import com.itsherman.example.template.DemoMessageMeta;
 import com.itsherman.service.EmailService;
 import com.itsherman.service.impl.EmailServiceImpl;
@@ -56,21 +55,23 @@ public class EmailSenderExample {
                 .setFrom("yumiaoxia132@163.com")
                 .setSubject("课程信息")
                 .setUseSSL(true)
-                .setToUsers("1253950375@qq.com","yumiaoxia22@163.com"));
-        ResultMsg resultMsg = emailService.send(defaultEmailMessage);
+                .setToUsers("2942261043@qq.com"));
+        ResultMsg resultMsg = emailService.sendSimpleEmail(defaultEmailMessage);
         System.out.println(resultMsg);
     }
 
     public void sendTemplateEmail(){
         HtmlEmailMesage htmlEmailMesage = new HtmlEmailMesage();
-        htmlEmailMesage.setTemplateUrl(MessageFormat.format("{0}/MailTemplate.html", ServerConfig.class.getClassLoader().getResource("").getPath()))
+        String templateUrl = MessageFormat.format("{0}MailTemplate.html", ServerConfig.class.getClassLoader().getResource("").getPath()).substring(1);
+        htmlEmailMesage.setTemplateUrl(templateUrl)
                 .setMessageMeta(new DemoMessageMeta("Sherman","现在报名学费6199元还可以优惠1500","2019-08-20 23:12:00"))
                 .setAbstractAssembler(new DemoAssembler())
                 .setFrom("yumiaoxia132@163.com")
                 .setSubject("学费信息")
                 .setUseSSL(true)
                 .setToUsers("1253950375@qq.com","yumiaoxia22@163.com");
-
+        ResultMsg resultMsg = emailService.sendTemplateEmail(htmlEmailMesage);
+        System.out.println(resultMsg);
 
     }
 }

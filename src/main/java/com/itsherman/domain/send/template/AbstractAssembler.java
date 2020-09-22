@@ -3,7 +3,9 @@ package com.itsherman.domain.send.template;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author yumiaoxia
@@ -18,7 +20,7 @@ public abstract class AbstractAssembler {
     private AbstractMessageMeta messageMeta;
 
 
-    public abstract String assembleEmailMessage() throws ParserConfigurationException, IOException, SAXException;
+    public abstract String assembleEmailMessage() throws ParserConfigurationException, IOException, SAXException, IntrospectionException, InvocationTargetException, IllegalAccessException;
 
     public String getTemplateUrl() {
         return templateUrl;

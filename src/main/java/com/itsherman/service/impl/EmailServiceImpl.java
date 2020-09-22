@@ -3,7 +3,6 @@ package com.itsherman.service.impl;
 import com.itsherman.config.ConfigManager;
 import com.itsherman.config.ServerConfig;
 import com.itsherman.constant.enums.SendType;
-import com.itsherman.domain.send.AbstractEmailMessage;
 import com.itsherman.domain.send.simple.DefaultEmailMessage;
 import com.itsherman.domain.send.EmailSender;
 import com.itsherman.domain.ResultMsg;

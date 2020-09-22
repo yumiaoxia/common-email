@@ -4,6 +4,7 @@ import com.itsherman.constant.enums.SendType;
 import com.itsherman.domain.ControlMailBox;
 import com.itsherman.domain.ResultMsg;
 import com.itsherman.domain.send.simple.DefaultEmailMessage;
+import com.itsherman.domain.send.template.HtmlEmailMesage;
 import com.itsherman.session.SessionFactory;
 
 import javax.mail.*;
@@ -45,7 +46,7 @@ public class EmailSender implements Serializable {
         ResultMsg resultMsg = new ResultMsg("Email Sending",false,"exception","Unknown Exception");
         Session session = SessionFactory.openSession(emailMessage.getUseSSL(),true);
         try {
-           MimeMessage message = getMessage(sendType,session);
+            MimeMessage message = getMessage(sendType,session);
             Transport transport = session.getTransport();
             transport.connect(controlMailBox.getUsername(), controlMailBox.getPassword());
             transport.sendMessage(message, message.getAllRecipients());
@@ -73,6 +74,9 @@ public class EmailSender implements Serializable {
         if(SendType.SIMPLE == sendType){
             DefaultEmailMessage defaultEmailMessage = (DefaultEmailMessage) emailMessage;
             message.setText(defaultEmailMessage.getContent(), "UTF-8");
+        }else{
+            HtmlEmailMesage htmlEmailMesage = (HtmlEmailMesage)emailMessage;
+            message.setContent(htmlEmailMesage.getContent(),"text/html;charset=UTF-8");
         }
         message.saveChanges();
         return message;
