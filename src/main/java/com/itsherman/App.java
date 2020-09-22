@@ -12,7 +12,7 @@ public class App
     public static void main( String[] args )
     {
         EmailSenderExample example = new EmailSenderExample();
-        //example.sendEmail();
+        example.sendEmail();
         example.sendTemplateEmail();
     }
 }
